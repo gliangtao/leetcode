@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     gettimeofday(&tvStart, NULL);
     ret = isMatch(argv[1], argv[2]);
     gettimeofday(&tvEnd, NULL);
-    
+
     printf("isMatch('%s', '%s'): %s\n", argv[1], argv[2], ret ? "true" : "false");
     int ds = tvEnd.tv_sec - tvStart.tv_sec;
     int dus = tvEnd.tv_usec - tvStart.tv_usec;
@@ -153,7 +153,7 @@ bool isMatch(char* s, char* p) {
 }
 #endif
 
-#if 0 
+#if 0
 //80ms version, O(m*n) time, O(n) memory
 bool isMatch(char* s, char* p) {
     if (!s || !p) {
@@ -273,15 +273,15 @@ bool isMatch(const char *s, const char *p) {
     const char* ss=s;
     while (*s){
         //advancing both pointers when (both characters match) or ('?' found in pattern)
-        //note that *p will not advance beyond its length 
-        if ((*p=='?')||(*p==*s)){s++;p++;continue;} 
+        //note that *p will not advance beyond its length
+        if ((*p=='?')||(*p==*s)){s++;p++;continue;}
 
-        // * found in pattern, track index of *, only advancing pattern pointer 
-        if (*p=='*'){star=p++; ss=s;continue;} 
+        // * found in pattern, track index of *, only advancing pattern pointer
+        if (*p=='*'){star=p++; ss=s;continue;}
 
         //current characters didn't match, last pattern pointer was *, current pattern pointer is not *
         //only advancing pattern pointer
-        if (star){ p = star+1; s=++ss;continue;} 
+        if (star){ p = star+1; s=++ss;continue;}
 
        //current pattern pointer is not star, last patter pointer was not *
        //characters do not match
@@ -291,11 +291,11 @@ bool isMatch(const char *s, const char *p) {
    //check for remaining characters in pattern
     while (*p=='*'){p++;}
 
-    return !*p;  
+    return !*p;
 }
 #endif
 
-#if 1
+#if 0
 //A KMP solution, which should work - not implemented or tested
 //Split "p" into sub-strings separated by "*", KMP-match each substring one-by-one.
 // Time should be O(m + n), space should be O(m). Simply use "strStr" to skip "*" matched substrs
@@ -376,3 +376,65 @@ bool isMatch(char* s, char* p) {
     return (*s == 0);
 }
 #endif
+
+#if 0
+//12ms
+bool isMatch(char* s, char* p) {
+    const int SLEN = strlen(s);
+    const int PLEN = strlen(p);
+    int si, pi, si_saved = -1, pi_saved, chs, chp;
+    for (si = 0, pi = 0; si < SLEN;) {
+        if (pi >= PLEN) {
+            if (si_saved >= 0) {
+                si = ++si_saved;
+                pi = pi_saved;
+                continue;
+            }
+            return false;
+        }
+        chs = s[si];
+        chp = p[pi];
+        if (chp == '*') {
+            si_saved = si;
+            pi_saved = ++pi;
+        } else {
+            if ((chs == chp) || (chp == '?')) {
+                si++;
+                pi++;
+            } else if (si_saved >= 0) {
+                si = ++si_saved;
+                pi = pi_saved;
+            } else {
+                return false;
+            }
+        }
+    }
+    for (; pi < PLEN; pi++) {
+        if (p[pi] != '*') return false;
+    }
+    return true;
+}
+#endif
+
+//8ms
+bool isMatch(char* s, char* p) {
+    char *ss = NULL, *sp;
+    int chs, chp;
+    while ((chs = *s) != 0) {
+        chp = *p;
+        if (chp == '*') {
+            ss = s;
+            sp = ++p;
+        } else if ((chs == chp) || (chp == '?')) {
+            s++;
+            p++;
+        } else if (ss != NULL) {
+            s = ++ss;
+            p = sp;
+        } else {
+            return false;
+        }
+    }
+    while (*p == '*') p++;
+    return (*p == 0);
+}

@@ -90,7 +90,7 @@ bool isMatch(char* s, char* p) {
     while(p[0] != '\0'){
         if('*' == p[1]){
             for(int i = 1; i <= SLEN; ++i)
-                if(!matchs[i] && matchs[i-1] && ('.' == p[0] || p[0] == s[i-1])) 
+                if(!matchs[i] && matchs[i-1] && ('.' == p[0] || p[0] == s[i-1]))
                     matchs[i] = true;
             p = p + 2;
         }else{
@@ -104,6 +104,7 @@ bool isMatch(char* s, char* p) {
 }
 #endif
 
+#if 0
 //0ms version
 bool isMatch(char* s, char* p) {
     const int SLEN = strlen(s);
@@ -131,4 +132,29 @@ bool isMatch(char* s, char* p) {
         }
     }
     return c[SLEN];
+}
+#endif
+
+//0ms version
+bool isMatch(char* s, char* p) {
+    const int SLEN = strlen(s);
+    int c[SLEN + 1];
+    int i, chp;
+    memset(c, 0, sizeof(int) * (SLEN + 1));
+    c[0] = 1;
+    while ((chp = *p)) {
+        if (p[1] == '*') {
+            for (i = 0; i < SLEN; i++) {
+                if (c[i] && !c[i + 1] && ((s[i] == chp) || ('.' == chp))) c[i + 1] = 1;
+            }
+            p += 2;
+        } else {
+            for (i = SLEN - 1; i >= 0; i--) {
+                c[i + 1] = (c[i] && ((s[i] == chp) || ('.' == chp)));
+            }
+            c[0] = 0;
+            p++;
+        }
+    }
+    return (c[SLEN] != 0);
 }

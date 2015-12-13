@@ -84,11 +84,6 @@ int** threeSum(int* nums, int numsSize, int* returnSize) {
     if (!nums || (numsSize < 3)) {
         return NULL;
     }
-    int **tps = (int**)malloc(sizeof(int*) * numsSize);
-    if (!tps) {
-        return NULL;
-    }
-    int **ptps = tps;
     int ntps = 0;
     qsort(nums, numsSize, sizeof(int), mycmp);
     DBG("Sorted nums:");
