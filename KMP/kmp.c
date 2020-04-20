@@ -102,10 +102,12 @@ char* strstrKmp(const char* str, const char* pattern) {
          i++;
          j++;
          if (j == plen - 1) {
+            free(next);
             return (char*)str + i - plen;
             //j = next[j] ==> to get next match
          }
       }
+      free(next);
    }
    return NULL;
 }
