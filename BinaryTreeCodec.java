@@ -55,11 +55,10 @@ public class Codec {
         if ((data == null) || (data.isEmpty())) return null;
         String[] strs = data.split(",");
         if (strs.length == 0) return null;
-        TreeNode root = new TreeNode(Integer.parseInt(strs[0]));
-        int i = 1;
         Stack<TreeNode> st = new Stack<TreeNode>();
+        TreeNode root = new TreeNode(Integer.parseInt(strs[0]));
         TreeNode node = root;
-        while (i < strs.length) {
+        for (int i = 1; i < strs.length; i++) {
             String str = strs[i];
             TreeNode next = "null".equals(str) ? null : new TreeNode(Integer.parseInt(str));
             if (node != null) {
@@ -69,7 +68,6 @@ public class Codec {
                 node = st.pop();
                 node = node.right = next;
             }
-            i++;
         }
         return root;
     }
